@@ -1,0 +1,6 @@
+@Presentation_HostAddress = http://localhost:19600
+
+GET {{Presentation_HostAddress}}/api/Companies
+Accept: application/json
+
+###

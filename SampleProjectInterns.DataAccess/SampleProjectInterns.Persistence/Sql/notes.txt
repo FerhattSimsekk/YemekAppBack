@@ -1,0 +1,3 @@
+﻿add-migration InitialCreate -context AppDbContext
+
+update-database -context AppDbContext 
