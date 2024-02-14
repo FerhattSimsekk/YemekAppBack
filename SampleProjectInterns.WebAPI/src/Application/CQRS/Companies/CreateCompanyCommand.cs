@@ -26,6 +26,12 @@ public class CreateCompanyCommandHandler : IRequestHandler<CreateCompanyCommand,
         _principal = principal;
         _mailSender = mailSender;
         _storage = storage;
+
+
+
+
+
+
     }
 
     public async Task<CompanyDto> Handle(CreateCompanyCommand request, CancellationToken cancellationToken)
