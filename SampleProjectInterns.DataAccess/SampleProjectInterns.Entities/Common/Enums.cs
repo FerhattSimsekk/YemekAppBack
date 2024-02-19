@@ -2,6 +2,7 @@
 
 public class Enums
 {
+    //SABİT DEĞERLER İÇİN ENUMLAR KULLANILIR
     public enum AdminAuthorization : byte
     {
         none = 0,

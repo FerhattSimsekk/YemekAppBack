@@ -12,26 +12,25 @@ using System.Text;
 using Microsoft.AspNetCore.Http;
 namespace Application.CQRS.Companies;
 
+//Dtolar veri modelleri
 public record CreateCompanyCommand(CompanyCreateDto Company):IRequest<CompanyDto>;
 
+//IRequestHandlerdan kalıtım alarak CreateCompanyCommand request ve CompanyDto ise response olarak verildi
 public class CreateCompanyCommandHandler : IRequestHandler<CreateCompanyCommand, CompanyDto>
 {
+    //Interfaceler oluşturdu
     private readonly IWebDbContext _webDbContext;
     private readonly IPrincipal _principal;
     private readonly IMailSender _mailSender;
     private readonly IStorageProvider _storage;
+
+    //interfaceler register içerisine kaydedildi
     public CreateCompanyCommandHandler(IWebDbContext webDbContext, IPrincipal principal, IMailSender mailSender, IStorageProvider storage)
     {
         _webDbContext = webDbContext;
         _principal = principal;
         _mailSender = mailSender;
         _storage = storage;
-
-
-
-
-
-
     }
 
     public async Task<CompanyDto> Handle(CreateCompanyCommand request, CancellationToken cancellationToken)
@@ -62,6 +61,8 @@ public class CreateCompanyCommandHandler : IRequestHandler<CreateCompanyCommand,
             CityId = request.Company.city_id,
             CountyId = request.Company.county_id
         };
+
+        //await aseknron olayın tamamlanmasını bekler.Asenkron işlemin sonuçları hazır olduğunda iş parçası buradan devam eder
         await _webDbContext.Companies.AddAsync(company, cancellationToken); 
         await _webDbContext.SaveChangesAsync(cancellationToken);
         if (request.Company.logo is not null)

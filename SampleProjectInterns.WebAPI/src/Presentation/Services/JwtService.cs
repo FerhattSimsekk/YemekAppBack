@@ -24,17 +24,20 @@ public class JwtService
         {
             Subject = new ClaimsIdentity(new[]
             {
+                //claimlar ile veriler taşınır
                 new Claim("Id", Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Email, identity.Email),
                 new Claim(ClaimTypes.Name, identity.Email),
                 new Claim(ClaimTypes.Role,  identity.Role),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
              }),
+            //token süresini ayarlama
             Expires = DateTime.UtcNow.AddMinutes(_settings.ExpiresInMinutes),
             Issuer = _settings.Issuer,
             Audience = _settings.Audience,
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
         };
+        //token üretir
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);

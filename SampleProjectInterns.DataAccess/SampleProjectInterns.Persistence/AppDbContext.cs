@@ -14,12 +14,14 @@ public class AppDbContext : DbContext
     public DbSet<Company> Companies => Set<Company>();
     public DbSet<City> Cities => Set<City>();
     public DbSet<County> Counties => Set<County>(); 
+    public DbSet<Customer> Customers => Set<Customer>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Identity>(ConfigureIdentity); 
         modelBuilder.Entity<Company>(ConfigureCompany);
         modelBuilder.Entity<City>(ConfigureCities);
         modelBuilder.Entity<County>(ConfigureCounties);  
+        modelBuilder.Entity<Customer>(ConfigureCustomer);  
     }
     private void ConfigureIdentity(EntityTypeBuilder<Identity> builder)
     {
@@ -52,10 +54,15 @@ public class AppDbContext : DbContext
     private void ConfigureCompany(EntityTypeBuilder<Company> builder)
     {
         builder.ToTable("Companies", Schemas.Public);
-        builder.HasMany(p => p.Identities).WithOne().HasForeignKey(mp => mp.CompanyId); 
+        builder.HasMany(p => p.Identities).WithOne().HasForeignKey(mp => mp.CompanyId);
+        builder.HasMany(p => p.Customers).WithOne().HasForeignKey(mp => mp.CompanyId); 
         builder.HasIndex(p => p.Id).IsUnique(true);
     }
-    
+    private void ConfigureCustomer(EntityTypeBuilder<Customer> builder)
+    {
+        builder.ToTable("Customers", Schemas.Public);
+        builder.HasIndex(p => p.Id).IsUnique(true);
+    }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
