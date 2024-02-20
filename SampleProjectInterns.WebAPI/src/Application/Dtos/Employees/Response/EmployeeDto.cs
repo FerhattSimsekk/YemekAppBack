@@ -18,5 +18,5 @@ public record EmployeeDto(
     DateTime? updated_at,
     Status status
 
-
+    //değerler alındı
     );
