@@ -21,4 +21,7 @@ public class Company : BaseEntity
        = new List<Identity>();
     public ICollection<Customer> Customers { get; set; }
     = new List<Customer>();
+
+    public ICollection<Employee> Employees { get; set; }
+    =new List<Employee>();
 }

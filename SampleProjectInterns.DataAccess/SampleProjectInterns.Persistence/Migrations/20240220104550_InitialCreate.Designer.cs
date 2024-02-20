@@ -12,7 +12,7 @@ using SampleProjectInterns.Persistence;
 namespace SampleProjectInterns.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240218124107_InitialCreate")]
+    [Migration("20240220104550_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -161,6 +161,122 @@ namespace SampleProjectInterns.Persistence.Migrations
                     b.ToTable("Counties", "definitions");
                 });
 
+            modelBuilder.Entity("SampleProjectInterns.Entities.Customer", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<byte>("Gender")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Mail")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("Phone")
+                        .HasColumnType("bigint");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("Customers", "public");
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Employee", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<byte>("Gender")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Mail")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("Phone")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("Phone2")
+                        .HasColumnType("bigint");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("Employees", "public");
+                });
+
             modelBuilder.Entity("SampleProjectInterns.Entities.Identity", b =>
                 {
                     b.Property<long>("Id")
@@ -217,6 +333,24 @@ namespace SampleProjectInterns.Persistence.Migrations
                     b.ToTable("Identities", "identity");
                 });
 
+            modelBuilder.Entity("SampleProjectInterns.Entities.Customer", b =>
+                {
+                    b.HasOne("SampleProjectInterns.Entities.Company", null)
+                        .WithMany("Customers")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Employee", b =>
+                {
+                    b.HasOne("SampleProjectInterns.Entities.Company", null)
+                        .WithMany("Employees")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SampleProjectInterns.Entities.Identity", b =>
                 {
                     b.HasOne("SampleProjectInterns.Entities.Company", null)
@@ -228,6 +362,10 @@ namespace SampleProjectInterns.Persistence.Migrations
 
             modelBuilder.Entity("SampleProjectInterns.Entities.Company", b =>
                 {
+                    b.Navigation("Customers");
+
+                    b.Navigation("Employees");
+
                     b.Navigation("Identities");
                 });
 #pragma warning restore 612, 618

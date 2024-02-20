@@ -1,3 +1,16 @@
 ﻿add-migration InitialCreate -context AppDbContext
 
 update-database -context AppDbContext 
+
+{
+  "company_id": 1,
+  "name": "cihat",
+  "surname": "eser",
+  "gender": "male",
+  "phone": 5456465946,
+  "mail": "ceser123@hotmail.com",
+  "phone2": 123,
+  "address": "AnkaraCankaya",
+  "department": "koordinatör",
+  "description": "abc"
+}
