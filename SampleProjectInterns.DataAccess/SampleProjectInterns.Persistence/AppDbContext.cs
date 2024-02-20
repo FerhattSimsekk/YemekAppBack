@@ -5,11 +5,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Data;
 
 namespace SampleProjectInterns.Persistence;
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions options) : base(options)
-    {
-    }
     public DbSet<Identity> Identities => Set<Identity>();
     public DbSet<Company> Companies => Set<Company>();
     public DbSet<City> Cities => Set<City>();

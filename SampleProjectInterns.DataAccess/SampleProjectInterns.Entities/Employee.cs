@@ -7,7 +7,7 @@ public class Employee:BaseEntity
 {
     public long CompanyId {  get; set; }
     public string Name { get; set; } = null!;
-    public string Surname  { get; set; }=null!;
+    public string Surname  { get; set; } = null!;
     public Gender Gender { get; set; }
     public long Phone  { get; set; }
     public string Mail { get; set; }
