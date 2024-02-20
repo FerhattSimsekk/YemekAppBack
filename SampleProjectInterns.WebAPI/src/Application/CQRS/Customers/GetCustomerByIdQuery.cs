@@ -1,15 +1,10 @@
-﻿using Application.CQRS.Companies;
-using Application.Dtos.Companies.Response;
-using Application.Dtos.Customers.Response;
+﻿using Application.Dtos.Customers.Response;
 using Application.Interfaces;
 using Application.Mappers;
 using Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SampleProjectInterns.Entities;
-using System.Diagnostics.Metrics;
 using System.Security.Principal;
-using static SampleProjectInterns.Entities.Common.Enums;
 
 namespace Application.CQRS.Customers;
 

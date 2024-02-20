@@ -1,12 +1,9 @@
 ﻿using Application.CQRS.Companies;
 using Application.CQRS.Customers;
-using Application.Dtos.Companies.Request;
 using Application.Dtos.Customers.Request;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 
 namespace Presentation.Controllers;
 
@@ -42,7 +39,7 @@ public class CustomerController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(long id)
     {
-        return Ok(await _sender.Send(new GetCompanyByIdQuery(id)));
+        return Ok(await _sender.Send(new GetCustomerByIdQuery(id)));
     }
 
 }
