@@ -13,6 +13,8 @@ public class Customer : BaseEntity
     public string? Mail {  get; set; }
     public string Address { get; set; } = null!;
     public string? Description {  get; set; }
+    public ICollection<Payment> Payments { get; set; }
+= new List<Payment>();
 
 
 }

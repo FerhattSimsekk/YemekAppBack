@@ -24,4 +24,6 @@ public class Company : BaseEntity
 
     public ICollection<Employee> Employees { get; set; }
     =new List<Employee>();
+    public ICollection<Payment> Payments { get; set; }
+= new List<Payment>();
 }
