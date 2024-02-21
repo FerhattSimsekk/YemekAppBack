@@ -1,38 +1,42 @@
-﻿using Application.Dtos.Cities.Response;
-using Application.Interfaces;
-using Application.Mappers;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Dtos.Cities.Response;         // Şehirlerin yanıt DTO'larını içeren namespace
+using Application.Interfaces;                   // Uygulama arayüzleri için gerekli namespace
+using Application.Mappers;                      // Veri nesnelerini DTO'lara dönüştürmek için gerekli namespace
+using MediatR;                                  // MediatR kütüphanesini kullanmak için gerekli namespace
+using Microsoft.EntityFrameworkCore;            // Entity Framework Core ile ilgili namespace'ler
 
-namespace Application.CQRS.Definitions;
-
-public record GetCitiesQuery() : IRequest<List<CityDto>>;
-public class GetCitiesQueryHandler : IRequestHandler<GetCitiesQuery, List<CityDto>>
+namespace Application.CQRS.Definitions
 {
-    private readonly IWebDbContext _webDbContext;
+    // GetCitiesQuery, şehirlerin listesini getirmek için kullanılan bir isteği temsil eder.
+    public record GetCitiesQuery() : IRequest<List<CityDto>>;
 
-    public GetCitiesQueryHandler(IWebDbContext webDbContext)
+    // GetCitiesQueryHandler, GetCitiesQuery isteğini işleyen bir sınıftır.
+    public class GetCitiesQueryHandler : IRequestHandler<GetCitiesQuery, List<CityDto>>
     {
-        _webDbContext = webDbContext;
-    }
+        private readonly IWebDbContext _webDbContext; // Veritabanı bağlamı için arayüz referansı
 
-    public async Task<List<CityDto>> Handle(GetCitiesQuery request, CancellationToken cancellationToken)
-    {
-        var query = _webDbContext.Cities
-            .Where(city => city.Status ==  SampleProjectInterns.Entities.Common.Enums.Status.approved);
+        // GetCitiesQueryHandler, gerekli bağımlılıkları alarak oluşturulur.
+        public GetCitiesQueryHandler(IWebDbContext webDbContext)
+        {
+            _webDbContext = webDbContext; // Veritabanı bağlamı enjekte edilir
+        }
 
-        var cities = await query
-               .AsNoTracking()
-               .ToListAsync(cancellationToken);
+        // Handle metodu, GetCitiesQuery isteğini işler ve şehirlerin listesini döndürür.
+        public async Task<List<CityDto>> Handle(GetCitiesQuery request, CancellationToken cancellationToken)
+        {
+            // Şehirlerin bulunduğu sorgu oluşturulur, yalnızca onaylanmış (approved) şehirler alınır.
+            var query = _webDbContext.Cities
+                .Where(city => city.Status == SampleProjectInterns.Entities.Common.Enums.Status.approved);
 
-        return cities
-            .Select(city => city.MapToCityDto())
-            .OrderBy(t => t.Name)
-            .ToList();
+            // Sorgu sonucundaki şehirlerin listesi alınır ve asenkron olarak listelenir.
+            var cities = await query
+                .AsNoTracking() // İzleme devre dışı bırakılır
+                .ToListAsync(cancellationToken); // Asenkron olarak liste alınır
+
+            // Şehirler, CityDto'ya dönüştürülür, adlarına göre sıralanır ve listelenir.
+            return cities
+                .Select(city => city.MapToCityDto()) // Şehirleri CityDto'ya dönüştürür
+                .OrderBy(t => t.Name) // Şehirleri ada göre sıralar
+                .ToList(); // Listeye dönüştürür
+        }
     }
 }

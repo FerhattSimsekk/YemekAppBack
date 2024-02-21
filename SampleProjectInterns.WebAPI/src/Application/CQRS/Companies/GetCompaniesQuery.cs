@@ -7,39 +7,45 @@ using System.Security.Principal;
 using Microsoft.EntityFrameworkCore;
 using Application.Mappers;
 
-namespace Application.CQRS.Companies;
-
-public record GetCompaniesQuery() : IRequest<List<CompanyDto>>;
-
-public class GetCompaniesQueryHandler : IRequestHandler<GetCompaniesQuery, List<CompanyDto>>
+namespace Application.CQRS.Companies
 {
-    private readonly IWebDbContext _webDbContext;
-    private readonly IPrincipal _principal;
+    // GetCompaniesQuery, tüm şirketleri almak için kullanılan bir isteği temsil eder.
+    public record GetCompaniesQuery() : IRequest<List<CompanyDto>>;
 
-    public GetCompaniesQueryHandler(IWebDbContext webDbContext, IPrincipal principal)
+    // GetCompaniesQueryHandler, GetCompaniesQuery isteğini işleyen bir sınıftır.
+    public class GetCompaniesQueryHandler : IRequestHandler<GetCompaniesQuery, List<CompanyDto>>
     {
-        _webDbContext = webDbContext;
-        _principal = principal;
-    }
+        private readonly IWebDbContext _webDbContext;
+        private readonly IPrincipal _principal;
 
-    public async Task<List<CompanyDto>> Handle(GetCompaniesQuery request, CancellationToken cancellationToken)
-    {
-        var identity = await _webDbContext.Identities.AsNoTracking()
-         .FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken)
-         ?? throw new Exception("User not found");
+        // GetCompaniesQueryHandler, gerekli bağımlılıkları alarak oluşturulur.
+        public GetCompaniesQueryHandler(IWebDbContext webDbContext, IPrincipal principal)
+        {
+            _webDbContext = webDbContext;
+            _principal = principal;
+        }
 
-        var auht = identity.Type;
-        if (auht is not AdminAuthorization.admin)
-            throw new UnAuthorizedException("Unauthorized access", "Company"); 
+        // Handle metodu, GetCompaniesQuery isteğini işler ve bir liste olarak CompanyDto'ları döndürür.
+        public async Task<List<CompanyDto>> Handle(GetCompaniesQuery request, CancellationToken cancellationToken)
+        {
+            // Kullanıcının kimliği alınır.
+            var identity = await _webDbContext.Identities.AsNoTracking()
+                .FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken)
+                ?? throw new Exception("User not found");
 
+            // Kullanıcının yetkilendirme seviyesi kontrol edilir, admin olmayanlar yetkilendirme hatası alır.
+            var auht = identity.Type;
+            if (auht is not AdminAuthorization.admin)
+                throw new UnAuthorizedException("Unauthorized access", "Company");
 
-        var company = await _webDbContext.Companies 
-            .AsNoTracking()
-            .OrderByDescending(order=>order.CreatedAt)
-            .Select(companies => companies.MapToCompanyDto("", ""))
-            .ToListAsync(cancellationToken);
+            // Tüm şirketler alınır, oluşturulma tarihine göre sıralanır ve CompanyDto'ya dönüştürülür.
+            var companies = await _webDbContext.Companies
+                .AsNoTracking()
+                .OrderByDescending(order => order.CreatedAt)
+                .Select(companies => companies.MapToCompanyDto("", ""))
+                .ToListAsync(cancellationToken);
 
-       
-        return company; 
+            return companies;
+        }
     }
 }

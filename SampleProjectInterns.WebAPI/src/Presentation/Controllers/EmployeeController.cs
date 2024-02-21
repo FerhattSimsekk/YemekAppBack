@@ -2,6 +2,7 @@
 using Application.CQRS.Employees; // Uygulama katmanındaki Employees namespace'i
 using Application.Dtos.Employees.Request; // Employees namespace'indeki istek DTO'ları
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.AccessControl;
 
@@ -9,6 +10,7 @@ namespace Presentation.Controllers // Presentation katmanındaki Controllers nam
 {
     [Route("api/[controller]")] // API endpoint'i belirleme
     [ApiController] // Controller'ın bir Web API controller'ı olduğunu belirtme
+    [Authorize(Policy = "verified", Roles = "admin")]
 
 
 

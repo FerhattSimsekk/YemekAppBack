@@ -19,6 +19,9 @@ public class AuthenticationController : ControllerBase
         _sender = sender;
     }
 
+
+
+
     [HttpPost]
     public async Task<IActionResult> Verify(IdentityVerifyDto identity)
     {
@@ -37,6 +40,12 @@ public class AuthenticationController : ControllerBase
 
         return Unauthorized();
     }
+
+
+
+
+
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {

@@ -7,52 +7,61 @@ using System.Security.Principal;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CQRS.Companies; 
-
-public record DeleteCompanyCommand(long Id) : IRequest;
-public class DeleteCompanyCommandHandler : IRequestHandler<DeleteCompanyCommand>
+namespace Application.CQRS.Companies
 {
-    private readonly IWebDbContext _webDbContext;
-    private readonly IPrincipal _principal;
-    private readonly IMailSender _mailSender;
+    // DeleteCompanyCommand, bir şirketi silmek için kullanılan bir isteği temsil eder.
+    public record DeleteCompanyCommand(long Id) : IRequest;
 
-    public DeleteCompanyCommandHandler(IWebDbContext webDbContext, IPrincipal principal, IMailSender mailSender)
+    // DeleteCompanyCommandHandler, DeleteCompanyCommand isteğini işleyen bir sınıftır.
+    public class DeleteCompanyCommandHandler : IRequestHandler<DeleteCompanyCommand>
     {
-        _webDbContext = webDbContext;
-        _principal = principal;
-        _mailSender = mailSender;
-    }
+        private readonly IWebDbContext _webDbContext;
+        private readonly IPrincipal _principal;
+        private readonly IMailSender _mailSender;
 
-    public async Task<Unit> Handle(DeleteCompanyCommand request, CancellationToken cancellationToken)
-    {
-        var identity = await _webDbContext.Identities.AsNoTracking()
-         .FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken)
-         ?? throw new Exception("User not found");
+        // DeleteCompanyCommandHandler, gerekli bağımlılıkları alarak oluşturulur.
+        public DeleteCompanyCommandHandler(IWebDbContext webDbContext, IPrincipal principal, IMailSender mailSender)
+        {
+            _webDbContext = webDbContext;
+            _principal = principal;
+            _mailSender = mailSender;
+        }
 
-        var auht = identity.Type;
-        if (auht is not AdminAuthorization.admin)
-            throw new UnAuthorizedException("Unauthorized access", "Company");
+        // Handle metodu, DeleteCompanyCommand isteğini işler ve Unit yanıtını döndürür.
+        public async Task<Unit> Handle(DeleteCompanyCommand request, CancellationToken cancellationToken)
+        {
+            // Kullanıcının kimliği alınır.
+            var identity = await _webDbContext.Identities.AsNoTracking()
+                .FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken)
+                ?? throw new Exception("User not found");
 
-        var company = await _webDbContext.Companies.FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken)
-           ?? throw new NotFoundException($"Company not found", "Company");
+            // Kullanıcının yetkilendirme seviyesi kontrol edilir, admin olmayanlar yetkilendirme hatası alır.
+            var auht = identity.Type;
+            if (auht is not AdminAuthorization.admin)
+                throw new UnAuthorizedException("Unauthorized access", "Company");
 
+            // Silinecek şirket veritabanından alınır, bulunamazsa hata alınır.
+            var company = await _webDbContext.Companies.FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken)
+                ?? throw new NotFoundException($"Company not found", "Company");
 
-        company.Status = Status.deleted;
-        await _webDbContext.SaveChangesAsync(cancellationToken);
+            // Şirketin durumu "silinmiş" olarak güncellenir ve veritabanı kaydedilir.
+            company.Status = Status.deleted;
+            await _webDbContext.SaveChangesAsync(cancellationToken);
 
+            // Silinen şirket için bir bilgilendirme e-postası oluşturulur ve gönderilir.
+            StringBuilder messageBody = new();
+            messageBody.Append("<b>Sayın </b>&nbsp; ; " + company.Name + " firma hesabınız silinmiştir.<br>");
 
-        StringBuilder messageBody = new();
-        messageBody.Append("<b>Sayın </b>&nbsp; ; " + company.Name + " firma hesabınız silinmiştir.<br>");
+            await _mailSender.SendMail(
+                new Mail()
+                {
+                    Body = new MailBody(MailBodyType.Html) { Text = messageBody.ToString() },
+                    Subject = "Firma Hesabı Silme",
+                    To = new List<MailAddress>() { new(company.Email, company.Email) }
+                }
+            );
 
-
-        await _mailSender.SendMail(
-           new Mail()
-           {
-               Body = new MailBody(MailBodyType.Html) { Text = messageBody.ToString() },
-               Subject = "Firma Hesabı Silme",
-               To = new List<MailAddress>() { new(company.Email, company.Email) }
-           }
-       );
-        return Unit.Value;
+            return Unit.Value;
+        }
     }
 }

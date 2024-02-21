@@ -3,10 +3,10 @@ using Application.Dtos.Identities.Response;
 using Application.Interfaces;
 using Application.Interfaces.Mailing;
 using Application.Mappers;
-using SampleProjectInterns.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using PasswordGenerator;
+using SampleProjectInterns.Entities;
 using System.Security.Principal;
 using System.Text;
 using static SampleProjectInterns.Entities.Common.Enums;
@@ -46,15 +46,15 @@ public class CreateIdentityCommandHandler : IRequestHandler<CreateIdentityComman
 
 
 
-        // var identity = await _webDbContext.Identities.AsNoTracking()
-        //   .FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken)
-        //   ?? throw new Exception("User not found");
-        //
-        // bool isUserEmailInUse = await _webDbContext.Identities
-        //    .AnyAsync(identity => identity.Email == request.Identity.Email, cancellationToken);
-        //
-        // if (isUserEmailInUse)
-        //     throw new Domain.Exceptions.ValidationException("Bu email adresi zaten kullanılıyor.", nameof(IdentityCreateDto.Email));
+        //var identity = await _webDbContext.Identities.AsNoTracking()
+        //  .FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken)
+        //  ?? throw new Exception("User not found");
+
+        //bool isUserEmailInUse = await _webDbContext.Identities
+        //   .AnyAsync(identity => identity.Email == request.Identity.Email, cancellationToken);
+
+        //if (isUserEmailInUse)
+        //    throw new Domain.Exceptions.ValidationException("Bu email adresi zaten kullanılıyor.", nameof(IdentityCreateDto.Email));
 
         var pwd = new Password(includeLowercase: true, includeUppercase: true, includeNumeric: true, includeSpecial: false, passwordLength: 8);
 

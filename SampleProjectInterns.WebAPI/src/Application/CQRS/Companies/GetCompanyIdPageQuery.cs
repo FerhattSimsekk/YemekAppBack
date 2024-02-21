@@ -10,35 +10,42 @@ using Application.Dtos.Companies.Response;
 using Microsoft.EntityFrameworkCore;
 using Application.Mappers;
 
-namespace Application.CQRS.Companies;
-
-
-public record GetCompanyIdPageQuery() : IRequest<List<CompanyIdPageTitleDto>>;
-
-public class GetCompanyIdPageQueryHandler : IRequestHandler<GetCompanyIdPageQuery, List<CompanyIdPageTitleDto>>
+namespace Application.CQRS.Companies
 {
-    private readonly IWebDbContext _webDbContext;
-    private readonly IPrincipal _principal;
+    // GetCompanyIdPageQuery, tüm onaylanmış şirketlerin ID ve sayfa başlıklarını almak için kullanılan bir isteği temsil eder.
+    public record GetCompanyIdPageQuery() : IRequest<List<CompanyIdPageTitleDto>>;
 
-    public GetCompanyIdPageQueryHandler(IWebDbContext webDbContext, IPrincipal principal)
+    // GetCompanyIdPageQueryHandler, GetCompanyIdPageQuery isteğini işleyen bir sınıftır.
+    public class GetCompanyIdPageQueryHandler : IRequestHandler<GetCompanyIdPageQuery, List<CompanyIdPageTitleDto>>
     {
-        _webDbContext = webDbContext;
-        _principal = principal;
-    }
+        private readonly IWebDbContext _webDbContext;
+        private readonly IPrincipal _principal;
 
-    public async Task<List<CompanyIdPageTitleDto>> Handle(GetCompanyIdPageQuery request, CancellationToken cancellationToken)
-    {
-        var identity = await _webDbContext.Identities.AsNoTracking()
-         .FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken)
-         ?? throw new Exception("User not found");
+        // GetCompanyIdPageQueryHandler, gerekli bağımlılıkları alarak oluşturulur.
+        public GetCompanyIdPageQueryHandler(IWebDbContext webDbContext, IPrincipal principal)
+        {
+            _webDbContext = webDbContext;
+            _principal = principal;
+        }
 
-        var auht = identity.Type;
-        //if (auht is not AdminAuthorization.admin)
-        //    throw new UnAuthorizedException("Unauthorized access", "Company");
+        // Handle metodu, GetCompanyIdPageQuery isteğini işler ve CompanyIdPageTitleDto listesi döndürür.
+        public async Task<List<CompanyIdPageTitleDto>> Handle(GetCompanyIdPageQuery request, CancellationToken cancellationToken)
+        {
+            // Kullanıcının kimliği alınır.
+            var identity = await _webDbContext.Identities.AsNoTracking()
+                .FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken)
+                ?? throw new Exception("User not found");
 
-        var company = await _webDbContext.Companies.Where(x => x.Status == Status.approved).AsNoTracking().ToListAsync(cancellationToken)
-           ?? throw new NotFoundException($"Company not found", "Company");
+            var auht = identity.Type;
+            //if (auht is not AdminAuthorization.admin)
+            //    throw new UnAuthorizedException("Unauthorized access", "Company");
 
-        return company.Select(com => com.MapToCompanyIdPageTitleDto()).ToList();
+            // Onaylanmış tüm şirketler alınır.
+            var companies = await _webDbContext.Companies.Where(x => x.Status == Status.approved).AsNoTracking().ToListAsync(cancellationToken)
+                ?? throw new NotFoundException($"Company not found", "Company");
+
+            // Şirketler CompanyIdPageTitleDto'ya dönüştürülerek döndürülür.
+            return companies.Select(com => com.MapToCompanyIdPageTitleDto()).ToList();
+        }
     }
 }

@@ -18,18 +18,27 @@ public class DefinitionsController : ControllerBase
     {
         _sender = sender;
     }
+
+
+
     [HttpGet("Cities")]
     public async Task<IActionResult> Cities()
     {
         var cityDto = await _sender.Send(new GetCitiesQuery());
         return Ok(cityDto);
     }
+
+
+
     [HttpGet("Counties/{CityId}")]
     public async Task<IActionResult> Counties(int CityId)
     {
         var districtDto = await _sender.Send(new GetCountiesQuery(CityId));
         return Ok(districtDto);
     }
+
+
+
     [HttpGet("Companies")]
     public async Task<IActionResult> Companies()
     {

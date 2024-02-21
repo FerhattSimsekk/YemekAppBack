@@ -11,71 +11,84 @@ using System.Xml.Linq;
 using System.Text;
 using SampleProjectInterns.Entities;
 
-namespace Application.CQRS.Companies;
-
-public record UpdateCompanyCommand(CompanyUpdateDto Company, long Id) : IRequest;
-
-public class UpdateCompanyCommandHandler : IRequestHandler<UpdateCompanyCommand>
+namespace Application.CQRS.Companies
 {
-    private readonly IWebDbContext _webDbContext;
-    private readonly IPrincipal _principal;
-    private readonly IMailSender _mailSender;
-    private readonly IStorageProvider _storage;
+    // UpdateCompanyCommand, bir şirketin bilgilerini güncellemek için kullanılan bir isteği temsil eder.
+    public record UpdateCompanyCommand(CompanyUpdateDto Company, long Id) : IRequest;
 
-    public UpdateCompanyCommandHandler(IWebDbContext webDbContext, IPrincipal principal, IMailSender mailSender, IStorageProvider storage)
+    // UpdateCompanyCommandHandler, UpdateCompanyCommand isteğini işleyen bir sınıftır.
+    public class UpdateCompanyCommandHandler : IRequestHandler<UpdateCompanyCommand>
     {
-        _webDbContext = webDbContext;
-        _principal = principal;
-        _mailSender = mailSender;
-        _storage = storage;
-    }
+        private readonly IWebDbContext _webDbContext;
+        private readonly IPrincipal _principal;
+        private readonly IMailSender _mailSender;
+        private readonly IStorageProvider _storage;
 
-    public async Task<Unit> Handle(UpdateCompanyCommand request, CancellationToken cancellationToken)
-    {
-        var identity = await _webDbContext.Identities.AsNoTracking()
-         .FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken)
-         ?? throw new Exception("User not found");
-
-        var auht = identity.Type;
-        if (auht is not AdminAuthorization.admin)
-            throw new UnAuthorizedException("Unauthorized access", "Company");
-
-        var company = await _webDbContext.Companies.FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken)
-           ?? throw new NotFoundException($"{request.Company.name} not found", "Company");
-
-        company.Address = request.Company.address;
-        company.Description = request.Company.description;
-        company.Email = request.Company.email;
-        company.Host = request.Company.host;
-        company.Name = request.Company.name;
-        company.PageTitle = request.Company.page_title;
-        company.Phone = request.Company.phone.ToString();
-        company.ShortName = request.Company.short_name;
-        company.Status = request.Company.Status;
-        company.TaxAdministration = request.Company.tax_administration;
-        company.TaxNumber = request.Company.tax_number;
-        company.CityId = request.Company.city_id;
-        company.CountyId = request.Company.county_id;
-        if (request.Company.logo is not null)
+        // UpdateCompanyCommandHandler, gerekli bağımlılıkları alarak oluşturulur.
+        public UpdateCompanyCommandHandler(IWebDbContext webDbContext, IPrincipal principal, IMailSender mailSender, IStorageProvider storage)
         {
-            company.Logo = $"Shared/{company.Id}/{request.Company.logo.FileName}";
-            await _storage.Put($"{company.Id}/{request.Company.logo.FileName.Split('.')[0]}.", request.Company?.logo?.OpenReadStream(), request.Company.logo.FileName.Split('.').Last().ToString(), cancellationToken);
+            _webDbContext = webDbContext;
+            _principal = principal;
+            _mailSender = mailSender;
+            _storage = storage;
         }
-        await _webDbContext.SaveChangesAsync(cancellationToken);
 
+        // Handle metodu, UpdateCompanyCommand isteğini işler.
+        public async Task<Unit> Handle(UpdateCompanyCommand request, CancellationToken cancellationToken)
+        {
+            // Kullanıcının kimliği alınır.
+            var identity = await _webDbContext.Identities.AsNoTracking()
+             .FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken)
+             ?? throw new Exception("User not found");
 
-        StringBuilder messageBody = new();
-        messageBody.Append("<b>Sayın </b>&nbsp; ; " + request.Company.name + " firma bilgilerinizde güncelleme yapılmıştır.<br>");
+            // Kullanıcının yetkilendirme seviyesi kontrol edilir, admin olmayanlar yetkilendirme hatası alır.
+            var auht = identity.Type;
+            if (auht is not AdminAuthorization.admin)
+                throw new UnAuthorizedException("Unauthorized access", "Company");
 
+            // Güncellenecek şirket veritabanından alınır, bulunamazsa hata alınır.
+            var company = await _webDbContext.Companies.FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken)
+               ?? throw new NotFoundException($"{request.Company.name} not found", "Company");
 
-        await _mailSender.SendMail(
-           new Mail()
-           {
-               Body = new MailBody(MailBodyType.Html) { Text = messageBody.ToString() },
-               Subject = "Firma Bilgilerinde Güncelleme",
-               To = new List<MailAddress>() { new(request.Company.email, request.Company.email) }
-           }
-       );
-        return Unit.Value;
+            // Şirket bilgileri güncellenir.
+            company.Address = request.Company.address;
+            company.Description = request.Company.description;
+            company.Email = request.Company.email;
+            company.Host = request.Company.host;
+            company.Name = request.Company.name;
+            company.PageTitle = request.Company.page_title;
+            company.Phone = request.Company.phone.ToString();
+            company.ShortName = request.Company.short_name;
+            company.Status = request.Company.Status;
+            company.TaxAdministration = request.Company.tax_administration;
+            company.TaxNumber = request.Company.tax_number;
+            company.CityId = request.Company.city_id;
+            company.CountyId = request.Company.county_id;
+
+            // Şirketin logosu varsa güncellenir.
+            if (request.Company.logo is not null)
+            {
+                company.Logo = $"Shared/{company.Id}/{request.Company.logo.FileName}";
+                await _storage.Put($"{company.Id}/{request.Company.logo.FileName.Split('.')[0]}.", request.Company?.logo?.OpenReadStream(), request.Company.logo.FileName.Split('.').Last().ToString(), cancellationToken);
+            }
+
+            // Değişiklikler kaydedilir.
+            await _webDbContext.SaveChangesAsync(cancellationToken);
+
+            // Şirket sahibine bilgilendirme e-postası gönderilir.
+            StringBuilder messageBody = new();
+            messageBody.Append("<b>Sayın </b>&nbsp; ; " + request.Company.name + " firma bilgilerinizde güncelleme yapılmıştır.<br>");
+
+            await _mailSender.SendMail(
+               new Mail()
+               {
+                   Body = new MailBody(MailBodyType.Html) { Text = messageBody.ToString() },
+                   Subject = "Firma Bilgilerinde Güncelleme",
+                   To = new List<MailAddress>() { new(request.Company.email, request.Company.email) }
+               }
+           );
+
+            return Unit.Value;
+        }
     }
 }

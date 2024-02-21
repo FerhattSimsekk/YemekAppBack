@@ -2,28 +2,31 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CQRS.Identities;
-
-public record IdentityVerificationQuery(string UserName) : IRequest<bool>;
-
-public class IdentityVerificationQueryHandler : IRequestHandler<IdentityVerificationQuery, bool>
+namespace Application.CQRS.Identities
 {
-    private readonly IWebDbContext _webDbContext;
+    // IdentityVerificationQuery: Kullanıcı kimliğinin doğrulama sorgusunu temsil eden sınıf
+    public record IdentityVerificationQuery(string UserName) : IRequest<bool>;
 
-    public IdentityVerificationQueryHandler(IWebDbContext webDbContext)
+    // IdentityVerificationQueryHandler: IdentityVerificationQuery sorgusunu işleyen sınıf
+    public class IdentityVerificationQueryHandler : IRequestHandler<IdentityVerificationQuery, bool>
     {
-        _webDbContext = webDbContext;
-    }
+        private readonly IWebDbContext _webDbContext; // Veritabanı bağlamı
 
-    public async Task<bool> Handle(IdentityVerificationQuery request, CancellationToken cancellationToken)
-    {
-        var isVerified = await _webDbContext.Identities
-            .Where(identity => identity.Email == request.UserName && identity.Status == SampleProjectInterns.Entities.Common.Enums.Status.approved)
-            //.Select(identity => identity.IsVerified as bool?)
-            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
-        if (isVerified is not null)
-            return true;
-        return false;
-        // return isVerified == true;
+        // Constructor: Bağımlılıkları enjekte eder
+        public IdentityVerificationQueryHandler(IWebDbContext webDbContext)
+        {
+            _webDbContext = webDbContext;
+        }
+
+        // Handle Metodu: IdentityVerificationQuery sorgusunu işler
+        public async Task<bool> Handle(IdentityVerificationQuery request, CancellationToken cancellationToken)
+        {
+            // Kullanıcının kimlik bilgisini e-posta adresine ve onaylanmış durumuna göre veritabanından çeker
+            var isVerified = await _webDbContext.Identities
+                .AnyAsync(identity => identity.Email == request.UserName && identity.Status == SampleProjectInterns.Entities.Common.Enums.Status.approved, cancellationToken);
+
+            // Eğer kimlik bilgisi bulunursa true, bulunamazsa false döner
+            return isVerified;
+        }
     }
 }
