@@ -4,6 +4,7 @@ using Application.Dtos.Employees.Request; // Employees namespace'indeki istek DT
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 using System.Security.AccessControl;
 
 namespace Presentation.Controllers // Presentation katmanındaki Controllers namespace'i
@@ -68,6 +69,15 @@ namespace Presentation.Controllers // Presentation katmanındaki Controllers nam
             return Ok(await _sender.Send(new DeleteEmployeeCommand(id)));
         }
 
-        
+
+        [HttpGet("PdfQuery")]
+        public async Task<IActionResult> GetEmployeePdfQuery()
+        {
+            var DataResult = await _sender.Send(new GetEmployeePdfQuery());
+            return File(DataResult, MediaTypeNames.Application.Pdf , "employe-list.pdf");
+
+        }
+
+
     }
 }

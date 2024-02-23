@@ -12,7 +12,7 @@ using SampleProjectInterns.Persistence;
 namespace SampleProjectInterns.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240220163143_InitialCreate")]
+    [Migration("20240222172349_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -333,6 +333,54 @@ namespace SampleProjectInterns.Persistence.Migrations
                     b.ToTable("Identities", "identity");
                 });
 
+            modelBuilder.Entity("SampleProjectInterns.Entities.Payment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("BillNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastPaymentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("Payments", "public");
+                });
+
             modelBuilder.Entity("SampleProjectInterns.Entities.Customer", b =>
                 {
                     b.HasOne("SampleProjectInterns.Entities.Company", null)
@@ -360,6 +408,21 @@ namespace SampleProjectInterns.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SampleProjectInterns.Entities.Payment", b =>
+                {
+                    b.HasOne("SampleProjectInterns.Entities.Company", null)
+                        .WithMany("Payments")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SampleProjectInterns.Entities.Customer", null)
+                        .WithMany("Payments")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SampleProjectInterns.Entities.Company", b =>
                 {
                     b.Navigation("Customers");
@@ -367,6 +430,13 @@ namespace SampleProjectInterns.Persistence.Migrations
                     b.Navigation("Employees");
 
                     b.Navigation("Identities");
+
+                    b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Customer", b =>
+                {
+                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }

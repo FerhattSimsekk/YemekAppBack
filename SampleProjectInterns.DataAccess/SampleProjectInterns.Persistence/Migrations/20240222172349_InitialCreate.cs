@@ -181,6 +181,42 @@ namespace SampleProjectInterns.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                schema: "public",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CompanyId = table.Column<long>(type: "bigint", nullable: false),
+                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    BillNumber = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    LastPaymentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Status = table.Column<byte>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalSchema: "public",
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Payments_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalSchema: "public",
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Cities_Id",
                 schema: "definitions",
@@ -240,6 +276,25 @@ namespace SampleProjectInterns.Persistence.Migrations
                 table: "Identities",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_CompanyId",
+                schema: "public",
+                table: "Payments",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_CustomerId",
+                schema: "public",
+                table: "Payments",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_Id",
+                schema: "public",
+                table: "Payments",
+                column: "Id",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -254,16 +309,20 @@ namespace SampleProjectInterns.Persistence.Migrations
                 schema: "definitions");
 
             migrationBuilder.DropTable(
-                name: "Customers",
-                schema: "public");
-
-            migrationBuilder.DropTable(
                 name: "Employees",
                 schema: "public");
 
             migrationBuilder.DropTable(
                 name: "Identities",
                 schema: "identity");
+
+            migrationBuilder.DropTable(
+                name: "Payments",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "Customers",
+                schema: "public");
 
             migrationBuilder.DropTable(
                 name: "Companies",
