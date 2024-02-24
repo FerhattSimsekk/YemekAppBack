@@ -6,6 +6,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Net.Mime;
 
 namespace Presentation.Controllers;
 
@@ -45,5 +47,11 @@ public class PaymentController : ControllerBase
     public async Task<IActionResult> Get(long id)
     {
         return Ok(await _sender.Send(new GetPaymentByIdQuery(id)));
+    }
+    [HttpGet("PdfQuery")]
+    public async Task<IActionResult> GetPaymentPdfQuery()
+    {
+        var DataResult=await _sender.Send(new GetPaymentPdfQuery());
+        return File(DataResult, MediaTypeNames.Application.Pdf,"ödeme-listesi.pdf");
     }
 }
