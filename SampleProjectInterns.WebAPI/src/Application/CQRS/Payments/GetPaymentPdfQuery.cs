@@ -34,10 +34,10 @@ namespace Application.CQRS.Payments
             FirstOrDefaultAsync(identity => identity.Email == _principal.Identity!.Name, cancellationToken) ??
             throw new Exception("User Not Found");
 
-            var payment = await _webDbContext.Payments.AsNoTracking().OrderByDescending(order => order.CreatedAt)
+            var payments = await _webDbContext.Payments.AsNoTracking().OrderByDescending(order => order.CreatedAt)
             .Select(payment => payment.MapToPaymentDto()).ToListAsync(cancellationToken);
 
-            var pdfbytes = PaymentPdfCreated(payment);
+            var pdfbytes = PaymentPdfCreated(payments);
             return pdfbytes;
         }
 
@@ -46,7 +46,7 @@ namespace Application.CQRS.Payments
         {
             // PDF dosyasının başlık ve detay kolon genişlikleri.
             var headerWidthsTitle = new[] { 200f };
-            var headerWidthsMountly = new[] { 20f, 60f, 100f, 60f, 60f, 70f, 30f, 70f, 100f };
+            var headerWidthsMountly = new[] { 20f, 60f, 100f, 60f, 60f };
 
             // PDF belgesini oluştur.
             var pdfDocument = new Document(new Rectangle(288f, 144f), -70f, -70f, 30f, 30f);
@@ -97,14 +97,11 @@ namespace Application.CQRS.Payments
             var headerCellsDetay = new[]
             {
                 new PdfPCell(new Phrase("Sıra No", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
-                new PdfPCell(new Phrase("Adı Soyadı", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
-                new PdfPCell(new Phrase("Mail", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
-                new PdfPCell(new Phrase("Telefon No -1", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
-                new PdfPCell(new Phrase("Telefon No -2" , turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
-                new PdfPCell(new Phrase("Departman" , turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
-                new PdfPCell(new Phrase("Cinsiyet" , turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
-                new PdfPCell(new Phrase("Adres" , turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
-                new PdfPCell(new Phrase("Açıklama" , turkishFont)) {HorizontalAlignment = 1, VerticalAlignment=Element.ALIGN_MIDDLE,BackgroundColor = colorHeader, BorderWidth = 1},
+                new PdfPCell(new Phrase("Ödeme Tutarı", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
+                new PdfPCell(new Phrase("Fatura No", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
+                new PdfPCell(new Phrase("Acıklama", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
+                new PdfPCell(new Phrase("Tarih" , turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
+                
             };
 
             // Detay başlıklarını tabloya ekle.
@@ -129,10 +126,9 @@ namespace Application.CQRS.Payments
                     new PdfPCell(new Phrase(index.ToString(), turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = color, BorderColor = colorBorder},
                     new PdfPCell(new Phrase(payment.price.ToString(), turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = color, BorderColor = colorBorder},
                     new PdfPCell(new Phrase(payment.bill_number.ToString(), turkishFont)) {HorizontalAlignment = 0,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = color, BorderColor = colorBorder},
-                    new PdfPCell(new Phrase(payment.description.ToString(), turkishFont)) {HorizontalAlignment = 0,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = color, BorderColor = colorBorder},
+                    new PdfPCell(new Phrase(payment.description, turkishFont)) {HorizontalAlignment = 0,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = color, BorderColor = colorBorder},
                     new PdfPCell(new Phrase(payment.last_payment_date.ToString(), turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = color, BorderColor = colorBorder},
-                    new PdfPCell(new Phrase(payment.status.ToString(), turkishFont)) {HorizontalAlignment = 0,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = color, BorderColor = colorBorder},
-                  
+                                      
                  };
 
                 foreach (var pdfPCell in headerTableDetayCells)
@@ -169,7 +165,7 @@ namespace Application.CQRS.Payments
             var turkishFont = new iTextSharp.text.Font(STF_Helvetica_Turkish, 10, iTextSharp.text.Font.NORMAL);
 
             // PDF başlık bilgilerini oluştur.
-            var headerWidthsTahliller = new[] { 20f, 60f, 100f, 60f, 60f, 70f, 30f, 70f, 100f };
+            var headerWidthsTahliller = new[] { 20f, 60f, 100f, 60f, 60f };
             var headerTableDetayTable = new PdfPTable(headerWidthsTahliller) { SpacingAfter = 1, SpacingBefore = 10, TotalWidth = 500F };
             var colorHeader = new iTextSharp.text.BaseColor(211, 211, 211);
 
@@ -179,9 +175,9 @@ namespace Application.CQRS.Payments
             new PdfPCell(new Phrase("Sıra No", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
             new PdfPCell(new Phrase("Ödeme Tutarı", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
             new PdfPCell(new Phrase("Fatura No", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
-            new PdfPCell(new Phrase("Açıklama ", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
-           
-        };
+            new PdfPCell(new Phrase("Acıklama ", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
+            new PdfPCell(new Phrase("Tarih ", turkishFont)) {HorizontalAlignment = 1,VerticalAlignment=Element.ALIGN_MIDDLE, BackgroundColor = colorHeader, BorderWidth = 1},
+            };
 
             // Detay başlıklarını tabloya ekle.
             foreach (var pdfPCell in headerCellsDetay)

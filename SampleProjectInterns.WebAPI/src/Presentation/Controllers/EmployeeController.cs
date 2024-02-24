@@ -74,7 +74,7 @@ namespace Presentation.Controllers // Presentation katmanındaki Controllers nam
         public async Task<IActionResult> GetEmployeePdfQuery()
         {
             var DataResult = await _sender.Send(new GetEmployeePdfQuery());
-            return File(DataResult, MediaTypeNames.Application.Pdf , "employe-list.pdf");
+            return File(DataResult, MediaTypeNames.Application.Pdf , "cihat-lizge-ilayda.pdf");
 
         }
 
