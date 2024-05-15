@@ -5,6 +5,8 @@ namespace Application.Dtos.Employees.Request;
 
 public class EmployeeUpdateDto
 {
+    internal long customer_id;
+
     [Required]
     public long company_id { get; set; }
     [Required]

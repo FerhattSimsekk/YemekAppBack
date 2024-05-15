@@ -1,5 +1,6 @@
 ﻿using Application.CQRS.Companies;
 using Application.CQRS.Customers;
+using Application.CQRS.Employees;
 using Application.Dtos.Customers.Request;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +23,12 @@ public class CustomerController : ControllerBase
     }
 
 
+
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        return Ok(await _sender.Send(new GetCustomerQuery()));
+    }
 
 
     [HttpPost]
