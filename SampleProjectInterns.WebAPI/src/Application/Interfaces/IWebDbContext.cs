@@ -8,10 +8,8 @@ public interface IWebDbContext
     DbSet<Identity> Identities { get; }
     DbSet<Company> Companies { get; } 
     DbSet<City> Cities { get; }
-    DbSet<County> Counties { get; } 
-    DbSet<Customer> Customers { get; }
-    DbSet<Employee> Employees { get; }
-    DbSet<Payment> Payments { get; }
+    DbSet<County> Counties { get; }  
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     
 }

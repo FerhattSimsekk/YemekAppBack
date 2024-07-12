@@ -22,6 +22,7 @@ namespace Application.CQRS.Companies
         private readonly IPrincipal _principal;
         private readonly IMailSender _mailSender;
         private readonly IStorageProvider _storage;
+ 
 
         // CreateCompanyCommandHandler, gerekli bağımlılıkları alarak oluşturulur.
         public CreateCompanyCommandHandler(IWebDbContext webDbContext, IPrincipal principal, IMailSender mailSender, IStorageProvider storage)
