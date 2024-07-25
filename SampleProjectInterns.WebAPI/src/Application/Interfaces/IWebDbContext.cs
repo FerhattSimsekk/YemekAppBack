@@ -9,6 +9,9 @@ public interface IWebDbContext
     DbSet<Company> Companies { get; } 
     DbSet<City> Cities { get; }
     DbSet<County> Counties { get; }  
+    DbSet<Customer> Customers { get; }
+    DbSet<Employee> Employees { get; }
+    DbSet<Payment> Payments { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     

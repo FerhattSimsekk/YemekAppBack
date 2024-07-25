@@ -19,5 +19,9 @@ public class Company : BaseEntity
     public int CountyId { get; set; } 
     public ICollection<Identity> Identities { get; set; }
        = new List<Identity>();
+    public ICollection<Customer> Customers { get; set; }=new List<Customer>();
+	public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+    public ICollection<Payment>Payments { get; set; }= new List<Payment>();
+
 
 }
