@@ -22,6 +22,48 @@ namespace SampleProjectInterns.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SampleProjectInterns.Entities.Adres", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AdresBilgisi")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("Baslik")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CountyId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("IdentityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdentityId");
+
+                    b.ToTable("Adresler", (string)null);
+                });
+
             modelBuilder.Entity("SampleProjectInterns.Entities.City", b =>
                 {
                     b.Property<int>("Id")
@@ -52,75 +94,6 @@ namespace SampleProjectInterns.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Cities", "definitions");
-                });
-
-            modelBuilder.Entity("SampleProjectInterns.Entities.Company", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("text");
-
-                    b.Property<int>("CityId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CountyId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Host")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Logo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PageTitle")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ShortName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("TaxAdministration")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TaxNumber")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.ToTable("Companies", "public");
                 });
 
             modelBuilder.Entity("SampleProjectInterns.Entities.County", b =>
@@ -158,120 +131,6 @@ namespace SampleProjectInterns.Persistence.Migrations
                     b.ToTable("Counties", "definitions");
                 });
 
-            modelBuilder.Entity("SampleProjectInterns.Entities.Customer", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("CompanyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<byte>("Gender")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Mail")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long?>("Phone")
-                        .HasColumnType("bigint");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.ToTable("Customers", "public");
-                });
-
-            modelBuilder.Entity("SampleProjectInterns.Entities.Employee", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("CompanyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<byte>("Gender")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Mail")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("Phone")
-                        .HasColumnType("bigint");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.ToTable("Employees", "public");
-                });
-
             modelBuilder.Entity("SampleProjectInterns.Entities.Identity", b =>
                 {
                     b.Property<long>("Id")
@@ -279,9 +138,6 @@ namespace SampleProjectInterns.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("CompanyId")
-                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -304,6 +160,9 @@ namespace SampleProjectInterns.Persistence.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("character varying(1024)");
 
+                    b.Property<long?>("RestoranId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Salt")
                         .IsRequired()
                         .HasMaxLength(2048)
@@ -320,15 +179,36 @@ namespace SampleProjectInterns.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("Email")
                         .IsUnique();
+
+                    b.HasIndex("RestoranId");
 
                     b.ToTable("Identities", "identity");
                 });
 
-            modelBuilder.Entity("SampleProjectInterns.Entities.Payment", b =>
+            modelBuilder.Entity("SampleProjectInterns.Entities.KategoriRestoran", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Ad")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("ResimUrl")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RestoranKategori", (string)null);
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Odeme", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -336,27 +216,208 @@ namespace SampleProjectInterns.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("BillNumber")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("OdemeTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("OdendiMi")
+                        .HasColumnType("boolean");
+
+                    b.Property<long>("SiparisId")
+                        .HasColumnType("bigint");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<byte>("Tip")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Odemeler", (string)null);
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Restoran", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("AcikMi")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Ad")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Adres")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("CompanyId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("CalismaSaatleri")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("CustomerId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("Hakkinda")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("LastPaymentDate")
+                    b.Property<int>("KategoriRestoranId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ResimUrl")
+                        .HasColumnType("text");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("TahminiTeslimatSüresi")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Telefon")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<decimal>("Price")
+                    b.HasKey("Id");
+
+                    b.HasIndex("KategoriRestoranId");
+
+                    b.ToTable("Restoranlar", (string)null);
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Siparis", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte>("Durum")
+                        .HasColumnType("smallint");
+
+                    b.Property<long>("IdentityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("OlusturmaTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("RestoranId")
+                        .HasColumnType("bigint");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("TeslimTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("ToplamTutar")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdentityId");
+
+                    b.HasIndex("RestoranId");
+
+                    b.ToTable("Siparisler", (string)null);
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.SiparisDetay", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Adet")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Fiyat")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("SiparisId")
+                        .HasColumnType("bigint");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<decimal>("Toplam")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("UrunId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SiparisId");
+
+                    b.HasIndex("UrunId");
+
+                    b.ToTable("SiparisDetaylar", (string)null);
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Urun", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Aciklama")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("Ad")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<bool>("Aktif")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Fiyat")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Kategori")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ResimUrl")
+                        .HasColumnType("text");
+
+                    b.Property<long>("RestoranId")
+                        .HasColumnType("bigint");
 
                     b.Property<byte>("Status")
                         .HasColumnType("smallint");
@@ -366,72 +427,165 @@ namespace SampleProjectInterns.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("RestoranId");
 
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.ToTable("Payments", "public");
+                    b.ToTable("Urunler", (string)null);
                 });
 
-            modelBuilder.Entity("SampleProjectInterns.Entities.Customer", b =>
+            modelBuilder.Entity("SampleProjectInterns.Entities.Yorum", b =>
                 {
-                    b.HasOne("SampleProjectInterns.Entities.Company", null)
-                        .WithMany("Customers")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Derecelendirme")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("IdentityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SiparisId")
+                        .HasColumnType("bigint");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("YorumMetni")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("YorumTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdentityId");
+
+                    b.HasIndex("SiparisId");
+
+                    b.ToTable("Yorumlar", (string)null);
                 });
 
-            modelBuilder.Entity("SampleProjectInterns.Entities.Employee", b =>
+            modelBuilder.Entity("SampleProjectInterns.Entities.Adres", b =>
                 {
-                    b.HasOne("SampleProjectInterns.Entities.Company", null)
-                        .WithMany("Employees")
-                        .HasForeignKey("CompanyId")
+                    b.HasOne("SampleProjectInterns.Entities.Identity", null)
+                        .WithMany("Adresler")
+                        .HasForeignKey("IdentityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("SampleProjectInterns.Entities.Identity", b =>
                 {
-                    b.HasOne("SampleProjectInterns.Entities.Company", null)
+                    b.HasOne("SampleProjectInterns.Entities.Restoran", null)
                         .WithMany("Identities")
-                        .HasForeignKey("CompanyId")
+                        .HasForeignKey("RestoranId");
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Restoran", b =>
+                {
+                    b.HasOne("SampleProjectInterns.Entities.KategoriRestoran", null)
+                        .WithMany("Restoranlar")
+                        .HasForeignKey("KategoriRestoranId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SampleProjectInterns.Entities.Payment", b =>
+            modelBuilder.Entity("SampleProjectInterns.Entities.Siparis", b =>
                 {
-                    b.HasOne("SampleProjectInterns.Entities.Company", null)
-                        .WithMany("Payments")
-                        .HasForeignKey("CompanyId")
+                    b.HasOne("SampleProjectInterns.Entities.Identity", null)
+                        .WithMany("Siparisler")
+                        .HasForeignKey("IdentityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SampleProjectInterns.Entities.Customer", null)
-                        .WithMany("Payments")
-                        .HasForeignKey("CustomerId")
+                    b.HasOne("SampleProjectInterns.Entities.Restoran", null)
+                        .WithMany("Siparisler")
+                        .HasForeignKey("RestoranId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SampleProjectInterns.Entities.Company", b =>
+            modelBuilder.Entity("SampleProjectInterns.Entities.SiparisDetay", b =>
                 {
-                    b.Navigation("Customers");
+                    b.HasOne("SampleProjectInterns.Entities.Siparis", null)
+                        .WithMany("SiparisDetaylari")
+                        .HasForeignKey("SiparisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Employees");
+                    b.HasOne("SampleProjectInterns.Entities.Urun", null)
+                        .WithMany("SiparisDetaylari")
+                        .HasForeignKey("UrunId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
+            modelBuilder.Entity("SampleProjectInterns.Entities.Urun", b =>
+                {
+                    b.HasOne("SampleProjectInterns.Entities.Restoran", null)
+                        .WithMany("Urunler")
+                        .HasForeignKey("RestoranId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Yorum", b =>
+                {
+                    b.HasOne("SampleProjectInterns.Entities.Identity", null)
+                        .WithMany("Yorumlar")
+                        .HasForeignKey("IdentityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SampleProjectInterns.Entities.Siparis", null)
+                        .WithMany("Yorumlar")
+                        .HasForeignKey("SiparisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Identity", b =>
+                {
+                    b.Navigation("Adresler");
+
+                    b.Navigation("Siparisler");
+
+                    b.Navigation("Yorumlar");
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.KategoriRestoran", b =>
+                {
+                    b.Navigation("Restoranlar");
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Restoran", b =>
+                {
                     b.Navigation("Identities");
 
-                    b.Navigation("Payments");
+                    b.Navigation("Siparisler");
+
+                    b.Navigation("Urunler");
                 });
 
-            modelBuilder.Entity("SampleProjectInterns.Entities.Customer", b =>
+            modelBuilder.Entity("SampleProjectInterns.Entities.Siparis", b =>
                 {
-                    b.Navigation("Payments");
+                    b.Navigation("SiparisDetaylari");
+
+                    b.Navigation("Yorumlar");
+                });
+
+            modelBuilder.Entity("SampleProjectInterns.Entities.Urun", b =>
+                {
+                    b.Navigation("SiparisDetaylari");
                 });
 #pragma warning restore 612, 618
         }

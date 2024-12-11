@@ -26,9 +26,5 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\Shared\" />
-  </ItemGroup>
-
  
 </Project>

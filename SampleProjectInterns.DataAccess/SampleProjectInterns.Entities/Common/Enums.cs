@@ -28,5 +28,17 @@ public class Enums
         none = 0,
         male,
         female
-    } 
+    }
+	public enum SiparisDurumu:byte
+	{
+		Hazirlaniyor,
+		Yolda,
+		TeslimEdildi
+	}
+	public enum OdemeTipi:byte
+	{
+		KrediKarti,
+		Nakit,
+		Cuzdan
+	}
 }

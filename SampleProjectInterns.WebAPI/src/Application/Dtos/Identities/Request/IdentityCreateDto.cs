@@ -4,8 +4,8 @@ namespace Application.Dtos.Identities.Request;
 
 public class IdentityCreateDto
 {
-    [Required]
-    public long CompanyId { get; set; }
+   
+    public long? RestoranId { get; set; }
 
     [MaxLength(256)]
     [EmailAddress]

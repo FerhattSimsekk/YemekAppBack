@@ -1,4 +1,4 @@
-﻿using Application.CQRS.Companies;
+﻿
 using Application.CQRS.Definitions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -39,10 +39,10 @@ public class DefinitionsController : ControllerBase
 
 
 
-    [HttpGet("Companies")]
-    public async Task<IActionResult> Companies()
-    {
-        var companyDto = await _sender.Send(new GetCompanyIdPageQuery());
-        return Ok(companyDto);
-    }
+    //[HttpGet("Companies")]
+    //public async Task<IActionResult> Companies()
+    //{
+    //    var companyDto = await _sender.Send(new GetCompanyIdPageQuery());
+    //    return Ok(companyDto);
+    //}
 }

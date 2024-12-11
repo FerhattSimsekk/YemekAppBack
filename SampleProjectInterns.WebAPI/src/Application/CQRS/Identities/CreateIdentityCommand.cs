@@ -27,22 +27,7 @@ public class CreateIdentityCommandHandler : IRequestHandler<CreateIdentityComman
 
     public async Task<IdentityDto> Handle(CreateIdentityCommand request, CancellationToken cancellationToken)
     {
-        Company c = new()
-        {
-            Description = "Cihat bey in referansıyla geldi",
-            Email = "fat@gmail.com",
-            Logo = "",
-            Name = "Cihat ESER",
-            Host = "eser.com",
-            PageTitle = "ESER BÜRO",
-            Phone = "5327190549",
-            ShortName = "EH",
-            Status = Status.approved,
-              CityId = 35,
-              CountyId = 1819
-        };
-        await _webDbContext.Companies.AddAsync(c, cancellationToken);
-        await _webDbContext.SaveChangesAsync(cancellationToken);
+        
 
 
 
@@ -64,11 +49,13 @@ public class CreateIdentityCommandHandler : IRequestHandler<CreateIdentityComman
 
         var newIdentity = new Identity()
         {
-            CompanyId =c.Id,// request.Identity.CompanyId,
+            RestoranId = request.Identity.RestoranId == 0 ? null : request.Identity.RestoranId,// request.Identity.
+                                                                                               //
+                                                                                               // Id,
             Email = request.Identity.Email,
             Password = hashedPassword,
             Salt = salt,
-            Type = AdminAuthorization.admin,//  (identity.Type == AdminAuthorization.admin || identity.Type == AdminAuthorization.moderator) ? (AdminAuthorization)request.Identity.Type : AdminAuthorization.user,
+            Type = (AdminAuthorization)request.Identity.Type,//  (identity.Type == AdminAuthorization.admin || identity.Type == AdminAuthorization.moderator) ? (AdminAuthorization)request.Identity.Type : AdminAuthorization.user,
             Name = request.Identity.Name,
             LastName = request.Identity.Surname,
             Status = Status.approved

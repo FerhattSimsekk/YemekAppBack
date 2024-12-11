@@ -25,7 +25,7 @@ public class IdentitiesController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> CreateUser(IdentityCreateDto identity)
     {
-        var newUser = await _sender.Send(new CreateIdentityCommand(identity)); 
+        var newUser = await _sender.Send(new CreateIdentityCommand(identity));
         var result = new { user = newUser };
 
         return Ok(result);
