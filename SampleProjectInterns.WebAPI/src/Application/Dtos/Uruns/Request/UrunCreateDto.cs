@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace Application.Dtos.Uruns.Request
 		public decimal fiyat { get; set; }
 
 		public string? aciklama { get; set; }
-		public string? resimUrl { get; set; }
+		public IFormFile? resimUrl { get; set; }
 		public string kategori { get; set; } = null!;
 		public bool aktif { get; set; }
 	}

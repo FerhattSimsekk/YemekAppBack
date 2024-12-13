@@ -18,11 +18,14 @@ namespace Application.CQRS.Uruns
 	{
 		private readonly IWebDbContext _webDbContext;
 		private readonly IPrincipal _principal;
+		private readonly IStorageProvider _storage;
 
-		public UpdateUrunCommandHandler(IWebDbContext webDbContext, IPrincipal principal)
+
+		public UpdateUrunCommandHandler(IWebDbContext webDbContext, IPrincipal principal, IStorageProvider storage)
 		{
 			_webDbContext = webDbContext;
 			_principal = principal;
+			_storage = storage;
 		}
 
 		public async Task<Unit> Handle(UpdateUrunCommand request, CancellationToken cancellationToken)
@@ -42,11 +45,16 @@ namespace Application.CQRS.Uruns
 			urun.Ad = request.Urun.ad;
 			urun.Fiyat = request.Urun.fiyat;
 			urun.Aciklama = request.Urun.aciklama;
-			urun.ResimUrl = request.Urun.resimUrl;
 			urun.Kategori = request.Urun.kategori;
 			urun.Aktif = request.Urun.aktif;
 			urun.Status = Status.approved;
 
+			if (request.Urun.resimUrl is not null)
+			{
+				await _storage.Put($"{urun.Id}/{request.Urun.resimUrl.FileName.Split('.')[0]}.", request.Urun?.resimUrl?.OpenReadStream(), request.Urun.resimUrl.FileName.Split('.').Last().ToString(), cancellationToken);
+				urun.ResimUrl = $"Shared/{urun.Id}/{request.Urun.resimUrl.FileName}";
+				await _webDbContext.SaveChangesAsync(cancellationToken);
+			}
 
 			await _webDbContext.SaveChangesAsync(cancellationToken);
 			return Unit.Value;

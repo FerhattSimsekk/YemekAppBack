@@ -22,13 +22,13 @@ namespace Presentation.Controllers
 			_sender = sender;
 		}
 		[HttpPost]
-		public async Task<IActionResult> Post([FromBody] UrunCreateDto urun)
+		public async Task<IActionResult> Post([FromForm] UrunCreateDto urun)
 		{
 			return Ok(await _sender.Send(new CreateUrunCommand(urun)));
 		}
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Put(long id, UrunUpdateDto urun)
+		public async Task<IActionResult> Put(long id, [FromForm]UrunUpdateDto urun)
 		{
 			return Ok(await _sender.Send(new UpdateUrunCommand(urun, id)));
 		}
