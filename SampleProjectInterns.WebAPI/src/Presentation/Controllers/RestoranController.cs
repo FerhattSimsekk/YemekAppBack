@@ -44,5 +44,12 @@ namespace Presentation.Controllers
 		{
 			return Ok(await _sender.Send(new GetRestoranByIdQuery(id)));
 		}
+		[Route("GetByKategoriId/{id}")]  
+		[HttpGet]
+		public async Task<IActionResult> GetByKategoriId(long id)
+		{
+			
+			return Ok(await _sender.Send(new GetRestoransByKategoriIdQuery(id)));
+		}
 	}
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SampleProjectInterns.Persistence;
@@ -11,9 +12,11 @@ using SampleProjectInterns.Persistence;
 namespace SampleProjectInterns.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241213164151_AdresIdeklendisiparise")]
+    partial class AdresIdeklendisiparise
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,9 +309,6 @@ namespace SampleProjectInterns.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("AdresId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -336,13 +336,16 @@ namespace SampleProjectInterns.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.Property<long>("adresId")
+                        .HasColumnType("bigint");
 
-                    b.HasIndex("AdresId");
+                    b.HasKey("Id");
 
                     b.HasIndex("IdentityId");
 
                     b.HasIndex("RestoranId");
+
+                    b.HasIndex("adresId");
 
                     b.ToTable("Siparisler", (string)null);
                 });
@@ -506,12 +509,6 @@ namespace SampleProjectInterns.Persistence.Migrations
 
             modelBuilder.Entity("SampleProjectInterns.Entities.Siparis", b =>
                 {
-                    b.HasOne("SampleProjectInterns.Entities.Adres", null)
-                        .WithMany("Siparisler")
-                        .HasForeignKey("AdresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SampleProjectInterns.Entities.Identity", null)
                         .WithMany("Siparisler")
                         .HasForeignKey("IdentityId")
@@ -521,6 +518,12 @@ namespace SampleProjectInterns.Persistence.Migrations
                     b.HasOne("SampleProjectInterns.Entities.Restoran", null)
                         .WithMany("Siparisler")
                         .HasForeignKey("RestoranId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SampleProjectInterns.Entities.Adres", null)
+                        .WithMany("Siparisler")
+                        .HasForeignKey("adresId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -14,9 +14,9 @@ using static SampleProjectInterns.Entities.Common.Enums;
 
 namespace Application.CQRS.Siparisler
 {
-	public record GetSiparislerQuery() : IRequest<List<SiparisDto>>;
+	public record GetSiparislerQuery() : IRequest<List<SiparisDtoForUser>>;
 
-	public class GetSiparislerQueryHandler : IRequestHandler<GetSiparislerQuery, List<SiparisDto>>
+	public class GetSiparislerQueryHandler : IRequestHandler<GetSiparislerQuery, List<SiparisDtoForUser>>
 	{
 		private readonly IWebDbContext _webDbContext;
 		private readonly IPrincipal _principal;
@@ -27,7 +27,7 @@ namespace Application.CQRS.Siparisler
 			_principal = principal;
 		}
 
-		public async Task<List<SiparisDto>> Handle(GetSiparislerQuery request, CancellationToken cancellationToken)
+		public async Task<List<SiparisDtoForUser>> Handle(GetSiparislerQuery request, CancellationToken cancellationToken)
 		{
 			// Kullanıcı kimliğini al
 			var identity = await _webDbContext.Identities.AsNoTracking()
@@ -51,12 +51,15 @@ namespace Application.CQRS.Siparisler
 
 			// Siparişleri çek ve DTO'ya dönüştür
 			var siparisler = await siparisQuery
-				.Include(s => s.SiparisDetaylari) // Sipariş detaylarını da dahil et
-				.OrderByDescending(s => s.OlusturmaTarihi)
-				.Select(s => s.MapToSiparisDto())
-				.ToListAsync(cancellationToken);
+	   .Include(s => s.SiparisDetaylari)
+	   .ThenInclude(s => s.Urun)
+	   .Include(s => s.Restoran)
+	   .OrderByDescending(s => s.OlusturmaTarihi)
+	   .Select(s => s.MapToSiparisDto(s.SiparisDetaylari.Sum(sd => sd.Adet))) // Expression body ile toplam adet hesaplanıyor
+	   .ToListAsync(cancellationToken);
 
 			return siparisler;
+
 		}
 	}
 }

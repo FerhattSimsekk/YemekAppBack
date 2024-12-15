@@ -19,7 +19,7 @@ using static SampleProjectInterns.Entities.Common.Enums;
 
 namespace Application.CQRS.SiparisDetays
 {
-	public record CreateSiparisDetayCommand(List<SiparisDetayCreateDto> SiparisDetay,long RestoranId) : IRequest<bool>;
+	public record CreateSiparisDetayCommand(List<SiparisDetayCreateDto> SiparisDetay,long RestoranId,long AdresId) : IRequest<bool>;
 	public class CreateSiparisDetayCommandHandler : IRequestHandler<CreateSiparisDetayCommand, bool>
 	{
 		private readonly IWebDbContext _webDbContext;
@@ -40,13 +40,15 @@ namespace Application.CQRS.SiparisDetays
 
 			Siparis siparis = new()
 			{
+				AdresId=request.AdresId,
 				RestoranId = request.RestoranId,
 				Durum = SiparisDurumu.Hazirlaniyor,
 				IdentityId = identity.Id,
 				ToplamTutar = request.SiparisDetay.Sum(x => x.Adet * x.Fiyat),
 				Status = Status.approved,
-				OlusturmaTarihi=DateTime.Now,
-				TeslimTarihi=DateTime.Now.AddHours(1)
+				OlusturmaTarihi=DateTime.Now.ToUniversalTime(),
+				TeslimTarihi=DateTime.Now.AddHours(1).ToUniversalTime(),
+				
 			};
 			await _webDbContext.Siparisler.AddAsync(siparis, cancellationToken);
 			await _webDbContext.SaveChangesAsync(cancellationToken);

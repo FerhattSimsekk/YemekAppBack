@@ -79,7 +79,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
 		builder.HasMany(r => r.Identities)
 			   .WithOne()
 			   .HasForeignKey(u => u.RestoranId);
-
+		
 	}
 	private void ConfigureUrun(EntityTypeBuilder<Urun> builder)
 	{
@@ -108,6 +108,11 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
 		builder.HasMany(u => u.Yorumlar)
 			  .WithOne()
 			  .HasForeignKey(sd => sd.SiparisId);
+		builder.HasOne(s => s.Restoran)
+	   .WithMany(r => r.Siparisler)
+	   .HasForeignKey(s => s.RestoranId)
+	   .OnDelete(DeleteBehavior.Restrict);
+
 	}
 	private void ConfigureSiparisDetay(EntityTypeBuilder<SiparisDetay> builder)
 	{
@@ -115,8 +120,12 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
 		builder.HasKey(sd => sd.Id);
 		builder.Property(sd => sd.Adet).IsRequired();
 		builder.Property(sd => sd.Fiyat).HasColumnType("decimal(18,2)");
+		builder.HasOne(s => s.Urun)
+   .WithMany(r => r.SiparisDetaylari)
+   .HasForeignKey(s => s.UrunId)
+   .OnDelete(DeleteBehavior.Restrict);
 
-	
+
 	}
 	private void ConfigureOdeme(EntityTypeBuilder<Odeme> builder)
 	{
@@ -132,9 +141,12 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
 		builder.ToTable("Adresler");
 		builder.HasKey(a => a.Id);
 		builder.Property(a => a.AdresBilgisi).IsRequired().HasMaxLength(1000);
+		builder.HasMany(u => u.Siparisler)
+			  .WithOne()
+			  .HasForeignKey(sd => sd.AdresId);
 
 		// Adres ile Sipariş ilişkisi
-	
+
 	}
 	private void ConfigureYorum(EntityTypeBuilder<Yorum> builder)
 	{

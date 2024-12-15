@@ -9,6 +9,7 @@ namespace Application.Dtos.SiparisDetays
 	public class SiparisDetayCreateDto
 	{
 		public long UrunId { get; set; }
+
 		public int Adet { get; set; }
 		public decimal Fiyat { get; set; } 
 		public decimal Toplam { get; set; }

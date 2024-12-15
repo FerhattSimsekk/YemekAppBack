@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Siparisler.Response;
+﻿using Application.Dtos.Restorans.Response;
+using Application.Dtos.Siparisler.Response;
 using Application.Dtos.Uruns.Response;
 using SampleProjectInterns.Entities;
 using System;
@@ -11,21 +12,26 @@ namespace Application.Mappers
 {
 	public static class SiparisMapper
 	{
-		public static SiparisDto MapToSiparisDto(this Siparis siparis)
+		public static SiparisDtoForUser MapToSiparisDto(this Siparis siparis,int toplamAdet)
 		{
-			return new SiparisDto(
+			return new SiparisDtoForUser(
 				siparis.Id,
 				siparis.IdentityId,
 				siparis.RestoranId,
 				siparis.Durum,
 				siparis.ToplamTutar,
 				siparis.TeslimTarihi,
-				siparis.SiparisDetaylari,
+				siparis.SiparisDetaylari.Select(x => x.MapToSiparisDetayDtoForUser()).ToList(),
 				siparis.Yorumlar,
 				siparis.Status,
 				siparis.CreatedAt,
-				siparis.UpdatedAt
+				siparis.UpdatedAt,
+				siparis.Restoran.MapToRestoranDtoForUser(),
+				toplamAdet
+
+
 				);
 		}
 	}
+	
 }

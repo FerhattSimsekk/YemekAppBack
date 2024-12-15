@@ -44,7 +44,8 @@ namespace Presentation.Controllers
 
 			var command = new CreateSiparisDetayCommand(
 				SiparisDetay: siparisDetayCreateDtoList,
-				RestoranId: siparisCreateRequest.RestoranId
+				RestoranId: siparisCreateRequest.RestoranId,
+				AdresId:siparisCreateRequest.AdresId
 			);
 
 			try
@@ -69,10 +70,10 @@ namespace Presentation.Controllers
 		{
 			return Ok(await _sender.Send(new GetSiparislerQuery()));
 		}
-		[HttpGet("{id}")]
-		public async Task<IActionResult> Get(long id)
-		{
-			return Ok(await _sender.Send(new GetSiparisByIdQuery(id)));
-		}
+		//[HttpGet("{id}")]
+		//public async Task<IActionResult> Get(long id)
+		//{
+		//	//return Ok(await _sender.Send(new GetSiparisByIdQuery(id)));
+		//}
 	}
 }

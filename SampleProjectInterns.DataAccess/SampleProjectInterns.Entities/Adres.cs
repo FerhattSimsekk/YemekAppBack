@@ -14,6 +14,8 @@ namespace SampleProjectInterns.Entities
 		public int CityId { get; set; }
 		public int CountyId { get; set; }
 		public long IdentityId { get; set; }
-		
+		public ICollection<Siparis>? Siparisler { get; set; }
+
+
 	}
 }

@@ -13,7 +13,10 @@ namespace SampleProjectInterns.Entities
 		
 		public long IdentityId { get; set; }
 		public long RestoranId { get; set; }
+		public Restoran Restoran { get; set; }
+
 		public SiparisDurumu Durum { get; set; } // Sipariş durumu (Hazırlanıyor, Yolda, Teslim Edildi)
+		public long AdresId { get; set; } 
 		public decimal ToplamTutar { get; set; }
 		public DateTime OlusturmaTarihi { get; set; }
 		public DateTime? TeslimTarihi { get; set; }

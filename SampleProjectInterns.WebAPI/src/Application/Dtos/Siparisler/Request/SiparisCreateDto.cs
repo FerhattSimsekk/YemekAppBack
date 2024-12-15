@@ -1,4 +1,5 @@
-﻿using SampleProjectInterns.Entities;
+﻿using Application.Dtos.SiparisDetays;
+using SampleProjectInterns.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,10 @@ namespace Application.Dtos.Siparisler.Request
 {
 	public class SiparisCreateDto
 	{
-		public long IdentityId { get; set; }
 		public long RestoranId { get; set; }
-		public SiparisDurumu Durum { get; set; } // Sipariş durumu (Hazırlanıyor, Yolda, Teslim Edildi)
+		public long AdresId { get; set; }
+
 		public decimal ToplamTutar { get; set; }
-		public DateTime OlusturmaTarihi { get; set; }
-		public DateTime? TeslimTarihi { get; set; }
-		public long? OdemeId { get; set; }
-		public ICollection<SiparisDetay> SiparisDetaylari { get; set; }
+		public ICollection<SiparisDetayCreateDto> SiparisDetaylari { get; set; }
 	}
 }

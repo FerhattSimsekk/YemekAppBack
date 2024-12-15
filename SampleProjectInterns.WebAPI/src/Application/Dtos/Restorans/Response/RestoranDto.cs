@@ -23,4 +23,5 @@ namespace Application.Dtos.Restorans.Response
 	DateTime created,
 	DateTime? updated
 );
+	
 }
