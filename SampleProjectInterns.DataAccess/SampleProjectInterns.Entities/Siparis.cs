@@ -22,5 +22,6 @@ namespace SampleProjectInterns.Entities
 		public DateTime? TeslimTarihi { get; set; }
 		public ICollection<SiparisDetay> SiparisDetaylari { get; set; }
 		public ICollection<Yorum> Yorumlar { get; set; } // Siparişe yapılmış yorumlar
+		public bool yorumYapildiMi {  get; set; }
 	}
 }

@@ -11,6 +11,7 @@ namespace SampleProjectInterns.Entities
 	{
 		public long SiparisId { get; set; } // Foreign Key
 		public long IdentityId { get; set; } // Foreign Key
+		public Identity Identity { get; set; }
 		public int Derecelendirme { get; set; } // 1-5 arası puan
 		public string YorumMetni { get; set; }
 		public DateTime YorumTarihi { get; set; }

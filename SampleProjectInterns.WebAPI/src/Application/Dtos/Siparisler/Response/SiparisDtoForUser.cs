@@ -18,11 +18,11 @@ namespace Application.Dtos.Siparisler.Response
 		 decimal ToplamTutar,
 		 DateTime? TeslimTarihi,
 		 ICollection<SiparisDetayDtoForUser> SiparisDetaylariForUser,
-		 ICollection<Yorum>? Yorumlar,
 		 Status status,
 	DateTime created,
 	DateTime? updated,
 	RestoranDtoForUser Restoran,
-	int toplamAdet
+	int toplamAdet,
+	bool yorumYapildimi
 	);
 }

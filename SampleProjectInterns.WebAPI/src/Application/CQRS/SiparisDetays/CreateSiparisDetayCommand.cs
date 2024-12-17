@@ -40,15 +40,16 @@ namespace Application.CQRS.SiparisDetays
 
 			Siparis siparis = new()
 			{
-				AdresId=request.AdresId,
+				AdresId = request.AdresId,
 				RestoranId = request.RestoranId,
 				Durum = SiparisDurumu.Hazirlaniyor,
 				IdentityId = identity.Id,
 				ToplamTutar = request.SiparisDetay.Sum(x => x.Adet * x.Fiyat),
 				Status = Status.approved,
-				OlusturmaTarihi=DateTime.Now.ToUniversalTime(),
-				TeslimTarihi=DateTime.Now.AddHours(1).ToUniversalTime(),
-				
+				OlusturmaTarihi = DateTime.Now.ToUniversalTime(),
+				TeslimTarihi = DateTime.Now.AddHours(1).ToUniversalTime(),
+				yorumYapildiMi = false
+
 			};
 			await _webDbContext.Siparisler.AddAsync(siparis, cancellationToken);
 			await _webDbContext.SaveChangesAsync(cancellationToken);

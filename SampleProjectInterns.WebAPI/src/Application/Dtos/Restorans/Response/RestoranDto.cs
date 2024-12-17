@@ -18,7 +18,7 @@ namespace Application.Dtos.Restorans.Response
 	string? calismaSaatleri,
 	string? tahminiTeslimatSüresi,
 	int KategoriRestoranId,
-	string kategorAdi,
+	string kategoriAdi,
 	Status status,
 	DateTime created,
 	DateTime? updated

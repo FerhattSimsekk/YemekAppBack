@@ -26,6 +26,7 @@ namespace Application.CQRS.Restorans
 		private readonly IPrincipal _principal;
 		private readonly IStorageProvider _storage;
 
+
 		public CreateRestoranCommandHandler(IWebDbContext webDbContext, IPrincipal principal, IStorageProvider storage)
 		{
 			_webDbContext = webDbContext;

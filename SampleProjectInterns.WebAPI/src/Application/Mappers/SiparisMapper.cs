@@ -22,12 +22,13 @@ namespace Application.Mappers
 				siparis.ToplamTutar,
 				siparis.TeslimTarihi,
 				siparis.SiparisDetaylari.Select(x => x.MapToSiparisDetayDtoForUser()).ToList(),
-				siparis.Yorumlar,
 				siparis.Status,
 				siparis.CreatedAt,
 				siparis.UpdatedAt,
 				siparis.Restoran.MapToRestoranDtoForUser(),
-				toplamAdet
+				toplamAdet,
+				siparis.yorumYapildiMi
+				
 
 
 				);

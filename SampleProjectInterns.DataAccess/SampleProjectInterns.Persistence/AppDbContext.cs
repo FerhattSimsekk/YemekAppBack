@@ -145,6 +145,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
 			  .WithOne()
 			  .HasForeignKey(sd => sd.AdresId);
 
+
 		// Adres ile Sipariş ilişkisi
 
 	}
@@ -152,10 +153,14 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
 	{
 		builder.ToTable("Yorumlar");
 		builder.HasKey(y => y.Id);
-	
+		builder.HasOne(s => s.Identity)
+.WithMany(r => r.Yorumlar)
+.HasForeignKey(s => s.IdentityId)
+.OnDelete(DeleteBehavior.Restrict);
+
 
 		// Yorum ile Restoran ilişkisi
-		
+
 	}
 	private void ConfigureCities(EntityTypeBuilder<City> builder)
     {
