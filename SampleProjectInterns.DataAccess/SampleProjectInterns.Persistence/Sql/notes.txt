@@ -1,6 +1,7 @@
 ﻿add-migration InitialCreate -context AppDbContext
 
 update-database -context AppDbContext 
+//ilo
 
 {
   "company_id": 1,
